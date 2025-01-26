@@ -1,5 +1,6 @@
 import { createContext, useState, useContext,useEffect} from "react";
 import { registerRequest, loginRequest,verifyTokenRequest } from "../api/auth.js";
+import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie'
 
 export const AuthContext= createContext()
@@ -20,14 +21,19 @@ export const AuthProvider=({children})=>{
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [errors,setErrors] = useState([])
     const [loading,setLoading]= useState(true)
+    const navigate = useNavigate()
 
     const signup = async (user) =>{
         try {
             console.log("Formulario enviado con valores:", user);
             const res = await registerRequest(user);
             console.log(res.data);
-            setUser(res.data)
-            setIsAuthenticated(true)
+            //setUser(res.data)
+            //setIsAuthenticated(true)
+            alert(res.data[0])
+            
+            navigate("/login")
+
           } catch (error) {
             //console.error("Error al registrar el usuario:", error.response);
             setErrors(error.response.data)

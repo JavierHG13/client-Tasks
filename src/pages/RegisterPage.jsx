@@ -1,17 +1,24 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaKey } from "react-icons/fa"; // Importar íconos adicionales
+//import { useEffect } from "react";
+import { /*useNavigate,*/ Link } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaKey, FaEye, FaEyeSlash } from "react-icons/fa"; // Importar íconos adicionales
 
 function RegisterPage() {
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
-  const { signup, isAuthenticated, errors: registerErrors } = useAuth();
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  useEffect(() => {
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
+  const { signup, /*isAuthenticated,*/ errors: registerErrors } = useAuth();
+  
+  //const navigate = useNavigate();
+
+  /*useEffect(() => {
     if (isAuthenticated) navigate("/tasks");
-  }, [isAuthenticated]);
+  }, [isAuthenticated]);*/
 
   const onSubmit = async (values) => {
     signup(values);
@@ -141,11 +148,18 @@ function RegisterPage() {
               <FaLock className="absolute top-3 left-3 text-gray-400" />
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 {...register("password", { required: true })}
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Contraseña"
               />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute top-3 right-3 text-gray-400 focus:outline-none"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
             {errors.password && (
               <p className="text-red-500 text-sm">La contraseña es requerida</p>
@@ -159,7 +173,7 @@ function RegisterPage() {
               <FaLock className="absolute top-3 left-3 text-gray-400" />
               <input
                 id="confirmPassword"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 {...register("confirmPassword", {
                   required: true,
                   validate: (value) =>
@@ -168,6 +182,13 @@ function RegisterPage() {
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Confirmar contraseña"
               />
+              <button
+                type="button"
+                onClick={toggleConfirmPasswordVisibility}
+                className="absolute top-3 right-3 text-gray-400 focus:outline-none"
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
