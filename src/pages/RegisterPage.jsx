@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-//import { useEffect } from "react";
-import { /*useNavigate,*/ Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaKey, FaEye, FaEyeSlash } from "react-icons/fa"; // Importar íconos adicionales
+import { Link } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,14 +10,15 @@ function RegisterPage() {
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
-  const { signup, /*isAuthenticated,*/ errors: registerErrors } = useAuth();
-  
-  //const navigate = useNavigate();
 
-  /*useEffect(() => {
-    if (isAuthenticated) navigate("/tasks");
-  }, [isAuthenticated]);*/
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm();
+
+  const { signup, errors: registerErrors } = useAuth();
 
   const onSubmit = async (values) => {
     signup(values);
@@ -38,13 +38,27 @@ function RegisterPage() {
               <input
                 id="realName"
                 type="text"
-                {...register("realName", { required: true })}
+                {...register("realName", {
+                  required: "El nombre es requerido",
+                  minLength: {
+                    value: 2,
+                    message: "El nombre real debe tener al menos 2 caracteres",
+                  },
+                  maxLength: {
+                    value: 50,
+                    message: "El nombre real no debe superar los 50 caracteres",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z\s]+$/,
+                    message: "El nombre real solo puede contener letras y espacios",
+                  },
+                })}
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Nombre"
               />
             </div>
             {errors.realName && (
-              <p className="text-red-500 text-sm">El nombre real es requerido</p>
+              <p className="text-red-500 text-sm">{errors.realName.message}</p>
             )}
           </div>
 
@@ -56,13 +70,27 @@ function RegisterPage() {
               <input
                 id="lastName"
                 type="text"
-                {...register("lastName", { required: true })}
+                {...register("lastName", {
+                  required: "El apellido es requerido",
+                  minLength: {
+                    value: 2,
+                    message: "El apellido debe tener al menos 2 caracteres",
+                  },
+                  maxLength: {
+                    value: 50,
+                    message: "El apellido no debe superar los 50 caracteres",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z\s]+$/,
+                    message: "El apellido solo puede contener letras y espacios",
+                  },
+                })}
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Apellido"
               />
             </div>
             {errors.lastName && (
-              <p className="text-red-500 text-sm">El apellido es requerido</p>
+              <p className="text-red-500 text-sm">{errors.lastName.message}</p>
             )}
           </div>
 
@@ -74,52 +102,19 @@ function RegisterPage() {
               <input
                 id="phoneNumber"
                 type="tel"
-                {...register("phoneNumber", { required: true })}
+                {...register("phoneNumber", {
+                  required: "El número de teléfono es requerido",
+                  pattern: {
+                    value: /^\d{10}$/,
+                    message: "El número de teléfono debe contener exactamente 10 dígitos",
+                  },
+                })}
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Número de teléfono"
               />
             </div>
             {errors.phoneNumber && (
-              <p className="text-red-500 text-sm">El número de teléfono es requerido</p>
-            )}
-          </div>
-
-          {/* Campo Palabra Secreta */}
-          <div className="relative mb-4">
-            <label htmlFor="secretQuestion" className="block text-gray-400 mb-1">
-              Selecciona una pregunta de seguridad
-            </label>
-            <select
-              id="secretQuestion"
-              {...register("secretQuestion", { required: true })}
-              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-2"
-            >
-              <option value="">-- Selecciona una opción --</option>
-              <option value="petName">¿Nombre de mi mascota?</option>
-              <option value="birthCity">¿Ciudad donde nací?</option>
-              <option value="favoriteFood">¿Comida favorita?</option>
-              <option value="firstSchool">¿Nombre de mi primera escuela?</option>
-              <option value="favoriteColor">¿Color favorito?</option>
-            </select>
-            {errors.secretQuestion && (
-              <p className="text-red-500 text-sm">Selecciona una pregunta de seguridad</p>
-            )}
-
-            <label htmlFor="secretWord" className="block text-gray-400 mb-1">
-              Respuesta
-            </label>
-            <div className="relative">
-              <FaKey className="absolute top-3 left-3 text-gray-400" />
-              <input
-                id="secretWord"
-                type="text"
-                {...register("secretWord", { required: true })}
-                className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
-                placeholder="Ingrese su respuesta"
-              />
-            </div>
-            {errors.secretWord && (
-              <p className="text-red-500 text-sm">La respuesta es requerida</p>
+              <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>
             )}
           </div>
 
@@ -131,13 +126,19 @@ function RegisterPage() {
               <input
                 id="email"
                 type="email"
-                {...register("email", { required: true })}
+                {...register("email", {
+                  required: "El correo es requerido",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Correo inválido",
+                  },
+                })}
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Correo electrónico"
               />
             </div>
             {errors.email && (
-              <p className="text-red-500 text-sm">El correo es requerido</p>
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
 
@@ -149,7 +150,18 @@ function RegisterPage() {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                {...register("password", { required: true })}
+                {...register("password", {
+                  required: "La contraseña es requerida",
+                  minLength: {
+                    value: 8,
+                    message: "La contraseña debe tener al menos 8 caracteres",
+                  },
+                  pattern: {
+                    value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/,
+                    message:
+                      "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&)",
+                  },
+                })}
                 className="w-full bg-zinc-700 text-white px-10 py-2 rounded-md"
                 placeholder="Contraseña"
               />
@@ -162,7 +174,7 @@ function RegisterPage() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-red-500 text-sm">La contraseña es requerida</p>
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
           </div>
 
@@ -175,7 +187,7 @@ function RegisterPage() {
                 id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 {...register("confirmPassword", {
-                  required: true,
+                  required: "Confirma tu contraseña",
                   validate: (value) =>
                     value === getValues("password") || "Las contraseñas no coinciden",
                 })}
@@ -195,11 +207,13 @@ function RegisterPage() {
             )}
           </div>
 
+          {/* Errores generales del servidor */}
           {registerErrors.map((error, i) => (
             <div className="bg-red-500 p-2 text-white tasks" key={i}>
               {error}
             </div>
           ))}
+
           <br />
           <div className="flex justify-center">
             <button
