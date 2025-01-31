@@ -58,11 +58,9 @@ const ForgotPassword = () => {
             if (response.ok) {
                 alert(data.message);
                 
-                alert(data.message);
-
                 if (data.url) {
                     // Redirigir al usuario a la URL de recuperación
-                    navigate(data.url); // Usa navigate en lugar de window.location.href
+                    navigate(`${data.url}`); // Usa navigate en lugar de window.location.href
                 }
 
                 

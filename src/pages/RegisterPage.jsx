@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,12 +11,7 @@ function RegisterPage() {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
 
   const { signup, errors: registerErrors } = useAuth();
 
@@ -29,6 +24,7 @@ function RegisterPage() {
       <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
         <h1 className="text-center h1-form text-gray-300 text-2xl mb-4">Registro</h1>
         <br />
+        
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Campo Nombre */}
           <div className="relative mb-4">
