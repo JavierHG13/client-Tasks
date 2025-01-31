@@ -11,7 +11,7 @@ const ResetPassword = () => {
 
     const [isValidToken, setIsValidToken] = useState(false); // Para manejar el estado del token
     const [loading, setLoading] = useState(true); // Estado para manejar la carga
-    const { update, handleSubmit, getValues, formState: { errors } } = useForm(); // Importar el hook useForm
+    const { register, handleSubmit, getValues, formState: { errors } } = useForm(); // Importar el hook useForm
 
 
     const [showPassword, setShowPassword] = useState(false);
@@ -24,24 +24,23 @@ const ResetPassword = () => {
         const verifyToken = async () => {
             try {
                 const response = await fetch(`https://api-tasks-wtel.vercel.app/api/verifyToken/${token}`);
-                //const data = await response.json();
-
                 if (response.ok) {
-
                     setIsValidToken(true);
+                } else {
+                    setIsValidToken(false);
                 }
-
             } catch (error) {
                 console.error('Error verificando el token:', error);
                 alert('Hubo un problema al verificar el token.');
-                //navigate('/login');
             } finally {
                 setLoading(false);
             }
         };
-
+    
         verifyToken();
-    }, [token, navigate]);
+
+    }, [token]); //Aqui se pasa lo que se va ocupar en useEffcet
+    
 
     const onSubmit = async (values) => {
 
@@ -49,7 +48,7 @@ const ResetPassword = () => {
             const response = await fetch('https://api-tasks-wtel.vercel.app/api/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, newPassword: values.password}),
+                body: JSON.stringify({ token, newPassword: values.password }),
             });
 
             const data = await response.json();
@@ -86,7 +85,7 @@ const ResetPassword = () => {
                                 <input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
-                                    {...update("password", {
+                                    {...register("password", {
                                         required: "La contraseña es requerida",
                                         minLength: {
                                             value: 8,
@@ -123,7 +122,7 @@ const ResetPassword = () => {
                                 <input
                                     id="confirmPassword"
                                     type={showConfirmPassword ? "text" : "password"}
-                                    {...update("confirmPassword", {
+                                    {...register("confirmPassword", {
                                         required: "Confirma tu contraseña",
                                         validate: (value) =>
                                             value === getValues("password") || "Las contraseñas no coinciden",
